@@ -25,7 +25,7 @@
 
 .journal-book {
   position: relative;
-  width: var(--book-width);
+  width: calc(2 * var(--book-width));
   height: var(--book-height);
   transition: transform 0.6s;
   transform-style: preserve-3d;
@@ -34,10 +34,10 @@
 
 .journal-paper {
   position: absolute;
-  width: 100%;
+  width: 50%;
   height: 100%;
   top: 0;
-  left: 0;
+  left: 50%;
   transform-style: preserve-3d;
   transform-origin: left;
   transition: var(--transition);

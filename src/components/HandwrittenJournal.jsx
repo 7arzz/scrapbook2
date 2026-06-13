@@ -299,13 +299,11 @@ const HandwrittenJournal = () => {
 
   const updateScale = () => {
     const width = window.innerWidth;
-    const bookWidth = 380; // base width
+    const bookWidth = 380; // base single page width
     const padding = 40;
     
-    // If book is open, it takes up 2x width
-    const requiredWidth = (currentLocation === 1 || currentLocation === maxLocation) 
-      ? bookWidth + padding 
-      : (bookWidth * 2) + padding;
+    // Always consider double width for the container
+    const requiredWidth = (bookWidth * 2) + padding;
 
     if (width < requiredWidth) {
       setScale(width / requiredWidth);
@@ -340,10 +338,10 @@ const HandwrittenJournal = () => {
     if (e.target.closest('.btn-restart-journal')) return;
 
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
+    const x = (e.clientX - rect.left) / scale; // Adjust for scale
 
-    // Use current scale to adjust click area if necessary, but rect already accounts for scale
-    if (x > rect.width / 2) {
+    // In a double-width container, spine is at bookWidth
+    if (x > 380) {
       goNextPage();
     } else {
       goPrevPage();
@@ -378,16 +376,21 @@ const HandwrittenJournal = () => {
 
   const getBookStyle = () => {
     let baseTransform = '';
+    
+    // Center the visible part of the book
     if (currentLocation === 1) {
-      baseTransform = 'translateX(0%)';
+      // Move left by 25% of the 2-page container to center the right page
+      baseTransform = 'translateX(-25%)';
     } else if (currentLocation === maxLocation) {
-      baseTransform = 'translateX(100%)';
+      // Move right by 25% of the 2-page container to center the left page
+      baseTransform = 'translateX(25%)';
     } else {
-      baseTransform = 'translateX(50%)';
+      // Spine is centered
+      baseTransform = 'translateX(0%)';
     }
     
     return { 
-      transform: `${baseTransform} scale(${scale})`,
+      transform: `scale(${scale}) ${baseTransform}`,
       transition: 'transform 0.6s'
     };
   };
