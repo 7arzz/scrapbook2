@@ -293,8 +293,32 @@ const PageContent = ({ data, restart }) => {
 
 const HandwrittenJournal = () => {
   const [currentLocation, setCurrentLocation] = useState(1);
+  const [scale, setScale] = useState(1);
   const numOfPapers = journalData.length;
   const maxLocation = numOfPapers + 1;
+
+  const updateScale = () => {
+    const width = window.innerWidth;
+    const bookWidth = 380; // base width
+    const padding = 40;
+    
+    // If book is open, it takes up 2x width
+    const requiredWidth = (currentLocation === 1 || currentLocation === maxLocation) 
+      ? bookWidth + padding 
+      : (bookWidth * 2) + padding;
+
+    if (width < requiredWidth) {
+      setScale(width / requiredWidth);
+    } else {
+      setScale(1);
+    }
+  };
+
+  useEffect(() => {
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, [currentLocation]);
 
   const goNextPage = () => {
     if (currentLocation < maxLocation) {
@@ -318,6 +342,7 @@ const HandwrittenJournal = () => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
 
+    // Use current scale to adjust click area if necessary, but rect already accounts for scale
     if (x > rect.width / 2) {
       goNextPage();
     } else {
@@ -352,13 +377,19 @@ const HandwrittenJournal = () => {
   };
 
   const getBookStyle = () => {
+    let baseTransform = '';
     if (currentLocation === 1) {
-      return { transform: 'translateX(0%)' };
+      baseTransform = 'translateX(0%)';
     } else if (currentLocation === maxLocation) {
-      return { transform: 'translateX(100%)' };
+      baseTransform = 'translateX(100%)';
     } else {
-      return { transform: 'translateX(50%)' };
+      baseTransform = 'translateX(50%)';
     }
+    
+    return { 
+      transform: `${baseTransform} scale(${scale})`,
+      transition: 'transform 0.6s'
+    };
   };
 
   return (

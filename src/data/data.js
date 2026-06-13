@@ -353,8 +353,8 @@ export const journalData = [
         },
         {
           type: "text",
-          text: "Prosesmu",
-          spans: [{ text: "Prosesmu", className: "circled-purple" }],
+          text: "Prosesnya",
+          spans: [{ text: "Prosesnya", className: "circled-purple" }],
           className: "handwritten",
         },
         { type: "doodle", name: "purple-hearts-corner" },
