@@ -211,8 +211,12 @@ const Doodle = ({ name, text }) => {
       return <div className="yellow-hearts-bottom">💛💛</div>;
     case 'circled-red-hebat':
       return <div className="circled-hebat">Hebat!</div>;
-    case 'dashed-loop':
-      return <div className="dashed-loop">➰➰</div>;
+    case 'circled-white-text':
+      return (
+        <div className="circled-white-text">
+          <span className="handwritten">{text}</span>
+        </div>
+      );
     default:
       return null;
   }
@@ -298,15 +302,16 @@ const HandwrittenJournal = () => {
 
   const updateScale = () => {
     const width = window.innerWidth;
-    const bookWidth = 380; // base single page width
-    const padding = 20; // Reduced padding for mobile
+    const bookWidth = 380; 
+    const margin = 20; // Margin on each side
     
-    // Total width needed is 2 pages when open
-    const requiredWidth = (bookWidth * 2) + (padding * 2);
+    // Total width needed is 2 pages when open + margin on both sides
+    const requiredWidth = (bookWidth * 2) + (margin * 2);
 
     if (width < requiredWidth) {
-      // Allow it to be slightly larger on mobile to maximize space
-      setScale(Math.min(1, (width - padding) / requiredWidth));
+      // Calculate scale so the 2-page spread fits screen width minus margins
+      const availableWidth = width - (margin * 2);
+      setScale(availableWidth / (bookWidth * 2));
     } else {
       setScale(1);
     }
@@ -377,40 +382,43 @@ const HandwrittenJournal = () => {
     };
   };
 
-  const getBookStyle = () => {
-    let xOffset = 0;
-    
-    // We want the spine (left edge of the 380px div) to be centered when open
-    // Since the 380px div is centered by flex, its spine is at -(380/2) from center
-    // So we need to move it right by 190px (50%) to put spine at center.
-    if (currentLocation > 1 && currentLocation < maxLocation) {
-      xOffset = 50; // translateX(50%) moves spine to center
-    } else if (currentLocation === maxLocation) {
-      xOffset = 100; // moves back cover to center
-    }
-    
-    return { 
-      transform: `translateX(${xOffset}%) scale(${scale}) translateX(${-xOffset}%) translateX(${xOffset}%)`, // Complex but ensures origin
-      // Simplified: Just use translateX and scale separately if possible or calculate pixels
-      transform: `translateX(calc(${xOffset}% - ${xOffset === 50 ? '0px' : '0px'})) scale(${scale})`,
-    };
-  };
-
-  // Re-thinking transform to be bulletproof
+  // CSS transform `translateX(X) scale(s)` order explanation:
+  // - scale(s) runs first: shrinks 380px book to 380*s px, centered by flex
+  // - translateX(X) runs after: moves in SCREEN pixels (parent space)
+  //
+  // Flex places the book div (380px, scaled to 380*s) at screen center C.
+  //   Left edge without offset = C - (380*s)/2
+  //
+  // State: OPEN (pages flipped between 1 and max)
+  //   We want LEFT EDGE (spine) to be at C  =>  shift right by (380*s)/2
+  //
+  // State: BACK COVER (maxLocation - all pages flipped)
+  //   The visible content (back face) is to the LEFT of the spine.
+  //   It extends from (C - 380*s) to C. We want its center at C.
+  //   Center of back face = C - (380*s)/2  =>  shift right by (380*s)/2 too!
+  //   Wait, the back face is on the left: shift LEFT by (380*s)/2 so that
+  //   the back face center = C - (380*s/2) + (-x) ... actually it mirrors:
+  //   When all flipped, the back cover occupies the LEFT slot.
+  //   To center it, shift LEFT by (380*s)/2.
+  //
+  // State: FRONT COVER (location=1, nothing flipped)
+  //   Single page on RIGHT slot, already flex-centered = no offset needed.
   const finalBookStyle = () => {
-    let transform = `scale(${scale})`;
-    
+    const scaledHalf = (380 * scale) / 2; // half of the scaled page width in screen px
+    let xPx = 0;
+
     if (currentLocation > 1 && currentLocation < maxLocation) {
-        // Spine centered
-        transform += ` translateX(50%)`;
+      // Open book: spine (left edge) at center → shift right
+      xPx = scaledHalf;
     } else if (currentLocation === maxLocation) {
-        // Back cover centered
-        transform += ` translateX(100%)`;
+      // All pages flipped: back cover is on the left → shift left so it centers
+      xPx = -scaledHalf;
     }
-    
-    return { 
-      transform,
-      transition: 'transform 0.6s'
+    // currentLocation === 1 (front cover): no offset, flex-centered naturally
+
+    return {
+      transform: `translateX(${xPx}px) scale(${scale})`,
+      transition: 'transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1)'
     };
   };
 

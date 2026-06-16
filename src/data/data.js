@@ -14,7 +14,7 @@ export const journalData = [
     id: 1,
     front: {
       template: "cover",
-      title: "For You\nFirlyana Anggita Dewi",
+      title: "For You :\n \nFilza Dwi \nAulia Rahma",
       className: "cover-main",
     },
     back: {
@@ -52,19 +52,19 @@ export const journalData = [
         },
         {
           type: "text",
-          text: "adek....",
+          text: "filza....",
           className: "handwritten underlined-red",
         },
-        { type: "doodle", name: "balloon" },
+        { type: "br" },
         {
           type: "text",
           text: "Buat kamu orang yang",
-          className: "handwritten shift-right",
+          className: "handwritten",
         },
         {
           type: "text",
           text: "ndak tau Jodoh Siapa",
-          className: "handwritten shift-right",
+          className: "handwritten",
         },
         { type: "text", text: ":)", className: "handwritten smiley" },
       ],
@@ -91,7 +91,7 @@ export const journalData = [
         },
         {
           type: "text",
-          text: "adek. Semoga kedepannya",
+          text: "filza. Semoga kedepannya",
           className: "handwritten underlined-red",
         },
         {
@@ -101,17 +101,17 @@ export const journalData = [
         },
         {
           type: "text",
-          text: "Sama adek, Semoga bisa",
+          text: "Sama filza, Semoga bisa",
           className: "handwritten underlined-red",
         },
         {
           type: "text",
-          text: "dapet in apa yang selama",
+          text: "dapat in apa yang selama",
           className: "handwritten underlined-red",
         },
         {
           type: "text",
-          text: "ini adek perjuangin ,",
+          text: "ini filza perjuangin ,",
           className: "handwritten underlined-red",
         },
         {
@@ -220,16 +220,16 @@ export const journalData = [
         },
         {
           type: "text",
-          text: "baik dimanapun adek",
+          text: "baik dimanapun filza",
           className: "handwritten blue-ink",
         },
         {
           type: "text",
-          text: "berada, Semoga adek",
+          text: "berada, Semoga filza",
           spans: [
             { text: "berada, " },
             { text: "Semoga", className: "underlined-blue" },
-            { text: " adek" },
+            { text: " filza" },
           ],
           className: "handwritten blue-ink",
         },
@@ -245,9 +245,9 @@ export const journalData = [
         },
         {
           type: "text",
-          text: "adek, Senantiasa bahagia",
+          text: "filza, Senantiasa bahagia",
           spans: [
-            { text: "adek, Senantiasa " },
+            { text: "filza, Senantiasa " },
             { text: "bahagia", className: "underlined-blue" },
           ],
           className: "handwritten blue-ink",
@@ -289,10 +289,10 @@ export const journalData = [
         },
         {
           type: "text",
-          text: "dimanapun adek berada",
+          text: "dimanapun filza berada",
           spans: [
             { text: "dimanapun", className: "circled-orange" },
-            { text: " adek berada" },
+            { text: " filza berada" },
           ],
           className: "handwritten",
         },
