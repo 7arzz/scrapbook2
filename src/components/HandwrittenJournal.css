@@ -454,20 +454,12 @@
   padding-right: 125px;
 }
 
-/* Responsive Styles */
-@media (max-width: 800px) {
-  :root {
-    --book-width: 320px;
-    --book-height: 480px;
-  }
-}
-
+/* Responsive Styles Handled by JS Scale Logic */
+/*
+@media (max-width: 800px) { ... }
+@media (max-width: 450px) { ... }
+*/
 @media (max-width: 450px) {
-  :root {
-    --book-width: 280px;
-    --book-height: 420px;
-  }
-  
   .handwritten {
     font-size: 1.3rem;
     line-height: 28px;

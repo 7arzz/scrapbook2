@@ -326,16 +326,16 @@ const HandwrittenJournal = () => {
 
   const updateScale = () => {
     const width = window.innerWidth;
-    const bookWidth = 380; 
-    const margin = 20; // Margin on each side
+    // Use a smaller base width for mobile to allow it to be relatively "bigger"
+    const baseBookWidth = width < 500 ? 300 : 380; 
+    const margin = 15; // Smaller margin on mobile
     
     // Total width needed is 2 pages when open + margin on both sides
-    const requiredWidth = (bookWidth * 2) + (margin * 2);
+    const requiredWidth = (baseBookWidth * 2) + (margin * 2);
 
     if (width < requiredWidth) {
-      // Calculate scale so the 2-page spread fits screen width minus margins
       const availableWidth = width - (margin * 2);
-      setScale(availableWidth / (bookWidth * 2));
+      setScale(availableWidth / (baseBookWidth * 2));
     } else {
       setScale(1);
     }
@@ -428,19 +428,22 @@ const HandwrittenJournal = () => {
   // State: FRONT COVER (location=1, nothing flipped)
   //   Single page on RIGHT slot, already flex-centered = no offset needed.
   const finalBookStyle = () => {
-    const scaledHalf = (380 * scale) / 2; // half of the scaled page width in screen px
+    const currentBookWidth = window.innerWidth < 500 ? 300 : 380;
+    const scaledHalf = (currentBookWidth * scale) / 2;
     let xPx = 0;
 
     if (currentLocation > 1 && currentLocation < maxLocation) {
-      // Open book: spine (left edge) at center → shift right
+      // Open book: shift right by half the scaled width to put spine at center
       xPx = scaledHalf;
     } else if (currentLocation === maxLocation) {
-      // All pages flipped: back cover is on the left → shift left so it centers
-      xPx = -scaledHalf;
+      // Back cover: shift right by full scaled width to put back cover at center
+      xPx = scaledHalf * 2;
     }
-    // currentLocation === 1 (front cover): no offset, flex-centered naturally
+    // Front cover (currentLocation === 1): centered naturally (xPx = 0)
 
     return {
+      width: `${currentBookWidth}px`,
+      height: `${currentBookWidth * (550/380)}px`,
       transform: `translateX(${xPx}px) scale(${scale})`,
       transition: 'transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1)'
     };
